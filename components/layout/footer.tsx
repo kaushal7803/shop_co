@@ -7,11 +7,11 @@ import { Logofbsimple2 as FacebookIcon } from "../../src/assets/icons/Facebook"
 import { Logoinstagram1 as InstagramIcon } from "../../src/assets/icons/Insta"
 import { Logogithub1 as GitHubIcon } from "../../src/assets/icons/GitHub"
 
-import visa from "../../src/assets/images/footer/Visa.png"
-import mastercard from "../../src/assets/images/footer/Mastercard.png"
-import paypal from "../../src/assets/images/footer/Paypal.png"
-import applePay from "../../src/assets/images/footer/ApplePay.png"
-import gPay from "../../src/assets/images/footer/GPay.png"
+import visa from "../../src/assets/images/Footer/Visa.png"
+import mastercard from "../../src/assets/images/Footer/Mastercard.png"
+import paypal from "../../src/assets/images/Footer/Paypal.png"
+import applePay from "../../src/assets/images/Footer/ApplePay.png"
+import gPay from "../../src/assets/images/Footer/GPay.png"
 
 export function Footer() {
   return (
