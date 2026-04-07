@@ -14,7 +14,7 @@ export interface ApiProduct {
 export async function fetchProducts(): Promise<ApiProduct[]> {
   try {
     const res = await fetch("https://fakestoreapi.com/products", {
-      next: { revalidate: 3600 },
+      cache: "no-store", // Temporary: ensure fresh data on Vercel
     });
     if (!res.ok) return [];
     return res.json();

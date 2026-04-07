@@ -1,4 +1,6 @@
 import dynamic from "next/dynamic";
+export const revalidate = 0; // Temporary: disable segment caching for debugging
+
 import { HeroSection } from "@/components/home/hero-section";
 import { ProductSection } from "@/components/home/product-section";
 import { DressStyleSection } from "@/components/home/dress-style";
