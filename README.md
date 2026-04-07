@@ -4,6 +4,10 @@ A modern, responsive e-commerce storefront built with **Next.js 16**, **Tailwind
 
 ## Live Preview
 
+🔗 **[https://shop-co-sepia-kappa.vercel.app](https://shop-co-sepia-kappa.vercel.app)**
+
+### Run Locally
+
 ```bash
 npm install
 npm run dev
