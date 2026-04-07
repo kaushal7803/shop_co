@@ -55,7 +55,7 @@ my-app/
 │       ├── fade-up.tsx           # Scroll-triggered fade animation
 │       └── button.tsx            # Button primitives
 ├── lib/
-│   ├── api.ts                    # FakeStore API client with ISR
+│   ├── api.ts                    # FakeStore API client (SSR + fallback)
 │   ├── cart-context.tsx          # Cart state provider
 │   └── utils.ts                  # Utility functions
 └── src/assets/                   # Static assets
@@ -87,10 +87,14 @@ This follows the **"push client to the leaves"** pattern, minimizing the client-
 Cart state uses **React Context** (`CartProvider`) with `localStorage` persistence. The provider initializes with deterministic default data on both server/client to prevent hydration mismatches.
 
 ### Data Fetching
-Products are fetched **server-side** from FakeStore API with **ISR (Incremental Static Regeneration)** — `revalidate: 3600` (1 hour). This means:
-- First request → fetch from API, cache result
-- Subsequent requests → serve cached data for 1 hour
-- After 1 hour → revalidate in background
+Products are fetched **server-side** from FakeStore API using **dynamic SSR** (`cache: "no-store"`).
+
+**Why SSR instead of ISR?** During deployment, ISR fetches data at build time. If the external API is unreachable from the hosting provider's build environment (a common issue with free APIs like FakeStore), ISR caches empty data and serves it to every visitor until the next revalidation window. Dynamic SSR solves this by fetching fresh data on every request.
+
+**Resilience pattern:**
+- `AbortController` with a 10-second timeout prevents hanging requests
+- 8 hardcoded fallback products ensure the UI never renders empty, even if the API is completely down
+- The fetch runs server-side, so the API URL is never exposed to the client
 
 ### Static Imports for Images
 All local images use **ES module imports** instead of `/public` path strings. This enables:
@@ -109,9 +113,9 @@ All local images use **ES module imports** instead of `/public` path strings. Th
 | `dynamic()` import for BrandsBanner | Lower TBT — Framer Motion bundle split into separate chunk |
 | AVIF/WebP image format conversion | ~30-50% smaller image payloads |
 | `minimumCacheTTL: 86400` in Next.js config | CDN-level image caching for 24 hours |
-| Static asset `Cache-Control: immutable` | Long-term browser caching for repeat visits |
+| Static asset `Cache-Control: immutable` | Long-term browser caching for JS/CSS bundles (`/_next/static/`) |
 | `sizes` prop on all `fill` Images | Proper srcset generation for responsive images |
-| ISR with 1-hour revalidation | Cached API responses, near-instant page loads |
+| Dynamic SSR with fallback data | Reliable product rendering even when external API is down |
 
 ---
 

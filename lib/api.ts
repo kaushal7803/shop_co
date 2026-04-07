@@ -12,7 +12,7 @@ export interface ApiProduct {
 }
 
 const FALLBACK_PRODUCTS: ApiProduct[] = [
-  { id: 1, title: "Faallraven - Foldsack No. 1 Backpack", price: 109.95, description: "", category: "men's clothing", image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png", rating: { rate: 3.9, count: 120 } },
+  { id: 1, title: "Fjallraven - Foldsack No. 1 Backpack", price: 109.95, description: "", category: "men's clothing", image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png", rating: { rate: 3.9, count: 120 } },
   { id: 2, title: "Mens Casual Premium Slim Fit T-Shirts", price: 22.3, description: "", category: "men's clothing", image: "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_t.png", rating: { rate: 4.1, count: 259 } },
   { id: 3, title: "Mens Cotton Jacket", price: 55.99, description: "", category: "men's clothing", image: "https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_t.png", rating: { rate: 4.7, count: 500 } },
   { id: 4, title: "Mens Casual Slim Fit", price: 15.99, description: "", category: "men's clothing", image: "https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png", rating: { rate: 2.1, count: 430 } },
@@ -23,14 +23,20 @@ const FALLBACK_PRODUCTS: ApiProduct[] = [
 ];
 
 export async function fetchProducts(): Promise<ApiProduct[]> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
   try {
     const res = await fetch("https://fakestoreapi.com/products", {
-      next: { revalidate: 3600 },
+      cache: "no-store",
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     if (!res.ok) return FALLBACK_PRODUCTS;
     const data = await res.json();
     return data.length > 0 ? data : FALLBACK_PRODUCTS;
   } catch {
+    clearTimeout(timeoutId);
     return FALLBACK_PRODUCTS;
   }
 }
